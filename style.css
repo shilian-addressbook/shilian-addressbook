@@ -50,3 +50,17 @@ dialog h2 { margin-top: 0; }
 .field { display: grid; gap: .4rem; }
 .method { display: grid; grid-template-columns: auto 1fr auto; gap: .4rem; margin-bottom: .5rem; }
 .dialog-actions { justify-content: flex-end; margin-top: 1rem; }
+
+@media (max-width: 540px) {
+  .toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .search input { width: 100%; }
+  .toolbar > .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .toolbar > .actions .primary { grid-column: 1 / -1; }
+  .toolbar button { min-height: 44px; }
+}
