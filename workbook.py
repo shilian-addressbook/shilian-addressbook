@@ -62,8 +62,15 @@ def import_contacts(data):
     try:
         sheet = book.worksheets[0]
         sheet.reset_dimensions()
-        rows = sheet.iter_rows(min_col=1, max_col=6)
-        headers = tuple(cell.value for cell in next(rows))
+        rows = sheet.iter_rows(min_col=1)
+        columns = len(HEADERS)
+        header_values = [cell.value for cell in next(rows, ())]
+        if any(value not in (None, "") for value in header_values[columns:]):
+            raise ValueError("表头有额外的列，请使用导出的模板。")
+        headers = tuple(header_values[:columns])
+        nonempty_headers = [value for value in headers if value not in (None, "")]
+        if len(set(nonempty_headers)) != len(nonempty_headers):
+            raise ValueError("表头包含重复的列名，请使用导出的模板。")
         if headers != HEADERS:
             raise ValueError("表头不匹配，请使用导出的模板。")
         contacts = []
@@ -71,12 +78,15 @@ def import_contacts(data):
             values = [cell.value for cell in cells]
             if number > MAX_ROWS + 1:
                 raise ValueError("请将数据放在前 5000 个数据行内。")
-            if all(value is None for value in values):
+            if all(value in (None, "") for value in values):
                 continue
             try:
+                if any(value not in (None, "") for value in values[columns:]):
+                    raise ValueError("包含额外的非空列，请只在模板列内填写。")
                 if any(cell.data_type == "f" for cell in cells):
                     raise ValueError("不接受公式，请粘贴为文本。")
-                name, favorite, *details = values
+                fields = (values + [None] * columns)[:columns]
+                name, favorite, *details = fields
                 if favorite not in (None, "", "是", "否"):
                     raise ValueError("收藏栏只接受「是」、「否」或空白。")
                 methods = {
