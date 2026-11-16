@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拾联 · 通讯录</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .file-mode body > :not(#file-help) { display: none; }
+  #file-help { margin-top: 2rem; }
+</style>
+<script>
+  if (location.protocol === "file:") document.documentElement.classList.add("file-mode");
+</script>
+<body>
+<section id="file-help" class="wrap" hidden>
+  <h1>启动拾联通讯录</h1>
+  <p>请在「成品」文件夹中双击 <strong>start.cmd</strong>，并保持启动窗口开启。</p>
+  <p>启动后打开 <a href="http://127.0.0.1:8765/">拾联通讯录</a>。</p>
+</section>
+<header class="banner">
+  <div class="wrap">
+    <div class="banner-top">
+      <div class="brand"><span id="brand-name">拾联</span><span> / ADDRESS BOOK</span></div>
+      <button id="language" type="button" lang="en">English</button>
+    </div>
+    <h1 id="page-heading">我的通讯录</h1>
+    <p id="tagline">把重要的人，放在容易找到的地方。</p>
+  </div>
+</header>
+<main class="wrap">
+  <section id="contacts-panel" class="panel" aria-label="联系人">
+    <div class="toolbar">
+      <label class="search"><span id="search-label">搜索</span> <input id="search" type="search" placeholder="姓名、电话、邮箱…"></label>
+      <div class="actions">
+        <button id="import">导入 Excel</button>
+        <button id="export">导出 Excel</button>
+        <button id="add" class="primary">＋ 新建联系人</button>
+        <input id="file" type="file" accept=".xlsx" hidden>
+      </div>
+    </div>
+    <div class="filters">
+      <button id="all" aria-pressed="true">全部</button>
+      <button id="favorites" aria-pressed="false">★ 收藏</button>
+      <span id="count"></span>
+    </div>
+    <p id="status" role="status"></p>
+    <div id="list" class="grid"></div>
+    <p id="empty" class="empty" hidden></p>
+  </section>
+  <footer id="storage-hint">数据保存在当前浏览器。导出 Excel 可备份；空通讯录也可以导出导入模板。</footer>
+</main>
+<dialog id="editor">
+  <form id="contact-form">
+    <h2 id="editor-title">新建联系人</h2>
+    <label class="field"><span id="name-label">姓名</span> <input id="name" required maxlength="100" autofocus></label>
+    <p id="methods-hint" class="hint">同类联系方式可添加多条。</p>
+    <div id="methods"></div>
+    <button id="add-method" type="button">＋ 添加联系方式</button>
+    <p id="form-error" role="alert"></p>
+    <div class="actions dialog-actions">
+      <button id="cancel" type="button">取消</button>
+      <button id="save-contact" class="primary" type="submit">保存联系人</button>
+    </div>
+  </form>
+</dialog>
+<script>
+  if (location.protocol === "file:") {
+    document.getElementById("file-help").hidden = false;
+  } else {
+    const script = document.createElement("script");
+    script.src = "/app.js";
+    document.body.append(script);
+  }
+</script>
+</body>
+</html>
